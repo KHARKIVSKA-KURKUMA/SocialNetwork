@@ -21,14 +21,14 @@ export const styles = StyleSheet.create({
     height: 50,
   },
   title: {
-    fontFamily: "ExtraBold",
+    fontFamily: "LexendPeta-ExtraBold",
     textAlign: "center",
     fontSize: 24,
     paddingTop: 32,
     marginBottom: 32,
   },
   loginLink: {
-    fontFamily: "Regular",
+    fontFamily: "LexendPeta-Regular",
   },
   inputWrap: {
     display: "flex",
@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
   },
   btnText: {
     color: "#000000",
-    fontFamily: "Bold",
+    fontFamily: "LexendPeta-Bold",
   },
   SignUpWrap: {
     flexDirection: "row",
@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   decr: {
-    fontFamily: "Regular",
+    fontFamily: "LexendPeta-Regular",
     marginRight: 5,
   },
 });
