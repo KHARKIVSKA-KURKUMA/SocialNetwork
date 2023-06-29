@@ -11,10 +11,12 @@ import {
 import { styles } from "./LoginScreen.styled";
 import { IconButton, Stack, TextInput } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import BgImage from "../images/backgroundSignUp.png";
+import BgImage from "../../images/backgroundSignUp.png";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export const LoginScreen = () => {
+  const navigation = useNavigation();
   /* -------------------------------------------------------------------------- */
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +28,7 @@ export const LoginScreen = () => {
       email,
       password,
     };
-    console.log("user :>> ", user);
+    navigation.navigate("Home");
     dismissKeyboard();
     cleanForm();
   };
@@ -91,15 +93,13 @@ export const LoginScreen = () => {
                 <Text style={styles.btnText}>Sign In</Text>
               </TouchableOpacity>
             </View>
-            <View
-              style={{
-                ...styles.btnContainer,
-                alignItems: "center",
-                marginBottom: 45,
-              }}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUp")}
+              style={styles.SignUpWrap}
             >
-              <Text style={styles.linkText}>Have no account? Sign Up</Text>
-            </View>
+              <Text style={styles.decr}> Have no account?</Text>
+              <Text style={styles.registerLink}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </View>

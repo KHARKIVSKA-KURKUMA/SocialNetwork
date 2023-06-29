@@ -18,10 +18,11 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   imageBg: { flex: 1, justifyContent: "flex-end", resizeMode: "cover" },
   form: {
-    // flex: 0.5,
     alignItems: "center",
     backgroundColor: "#fff",
     position: "relative",
@@ -90,10 +91,18 @@ export const styles = StyleSheet.create({
     color: "#1B4371",
   },
   btnContainer: { width: "100%", backgroundColor: "#fff" },
-  linkText: {
+  decr: {
     fontFamily: "LexendPeta-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#1B4371",
+    marginRight: 5,
+  },
+  SignUpWrap: {
+    alignItems: "center",
+    marginBottom: 45,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 16,
+  },
+  registerLink: {
+    fontFamily: "LexendPeta-Regular",
   },
 });

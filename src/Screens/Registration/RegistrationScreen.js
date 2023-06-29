@@ -5,7 +5,6 @@ import {
   ImageBackground,
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
 } from "react-native";
 import { styles } from "./RegistrationScreen.styled";
 import {
@@ -15,15 +14,17 @@ import {
   TextInput,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import BgImage from "../images/backgroundSignUp.png";
+import BgImage from "../../images/backgroundSignUp.png";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 export const RegistrationScreen = () => {
+  const navigation = useNavigation();
   /* -------------------------------------------------------------------------- */
   const [email, setEmail] = useState("");
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [hiddenPassword, setHiddenPassword] = useState(true);
-  const behavior = Platform.OS === "android" ? "padding" : "height";
   /* -------------------------------------------------------------------------- */
   const handleFormSubmit = () => {
     const user = {
@@ -31,7 +32,7 @@ export const RegistrationScreen = () => {
       email,
       password,
     };
-    console.log("user :>> ", user);
+    navigation.navigate("Home");
     cleanForm();
   };
   /* -------------------------------------------------------------------------- */
@@ -114,10 +115,13 @@ export const RegistrationScreen = () => {
             >
               <Text style={styles.btnText}>Sign Up</Text>
             </TouchableOpacity>
-            <View style={styles.SignInWrap}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignIn")}
+              style={styles.SignInWrap}
+            >
               <Text style={styles.decr}> Already registered?</Text>
               <Text style={styles.loginLink}>Sign In</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </View>
