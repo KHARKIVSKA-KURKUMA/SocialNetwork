@@ -3,25 +3,84 @@ import { Text } from "react-native";
 import { IconButton, Stack, TextInput } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { styles } from "./CreatePostsScreen.styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
   const [picture, setPicture] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState(null);
+  const [cameraPermission, setHasCameraPermission] = useState(null);
+  const [locationPermission, setHasLocationPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [camera, setCamera] = useState(null);
   /* -------------------------------------------------------------------------- */
-  const handleSubmit = () => {
+  useEffect(() => {
+    (async () => {
+      const { status: cameraStatus } =
+        await Camera.requestCameraPermissionsAsync();
+      setHasCameraPermission(cameraStatus === "granted");
+      const { status: locationStatus } =
+        await Location.requestForegroundPermissionsAsync();
+      setHasLocationPermission(locationStatus === "granted");
+    })();
+  }, []);
+
+  /* -------------------------------------------------------------------------- */
+  const handleSubmit = async () => {
+    const position = await Location.getCurrentPositionAsync();
+    const image = { photo: picture };
+    if (locationPermission) {
+      const data = {
+        image,
+        title,
+        location,
+        coords: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      };
+      console.log("data :>> ", data);
+      navigation.navigate("PostsScreen");
+    } else {
+      const image = { photo: picture };
+      const data = {
+        title,
+        image,
+        location,
+      };
+      console.log("data :>> ", data);
+      navigation.navigate("PostsScreen");
+    }
     cleanForm();
   };
   /* -------------------------------------------------------------------------- */
+  const takePicture = async () => {
+    const { uri } = await camera.takePictureAsync({
+      width: 640,
+      height: 480,
+    });
+    setPicture(uri);
+    if (locationPermission) {
+      const position = await Location.getCurrentPositionAsync();
+      const place = await Location.reverseGeocodeAsync({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+      setLocation(`${place[0].region}, ${place[0].country}`);
+    }
+  };
+
+  /* -------------------------------------------------------------------------- */
   const cleanForm = () => {
-    setTitle("");
-    setLocation(null);
     setPicture(null);
+    setTitle(null);
+    setLocation(null);
   };
   /* -------------------------------------------------------------------------- */
   return (
@@ -40,18 +99,27 @@ export const CreatePostsScreen = () => {
       </View>
       <View style={styles.mainContext}>
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={{ uri: "https://mui.com/static/images/avatar/1.jpg" }}
-          />
-
-          <IconButton
-            style={styles.iconBtn}
-            color="#BDBDBD"
-            icon={(props) => <Icon name="camera" size={24} {...props} />}
-          />
+          {cameraPermission && (
+            <Camera style={{ ...styles.imageContainer }} ref={setCamera}>
+              {picture && (
+                <Image style={styles.image} source={{ uri: picture }} />
+              )}
+              <IconButton
+                style={styles.iconBtn}
+                color="#BDBDBD"
+                icon={(props) => (
+                  <Icon
+                    name="camera"
+                    size={24}
+                    {...props}
+                    onPress={() => takePicture()}
+                  />
+                )}
+              />
+            </Camera>
+          )}
         </View>
-        <Text style={styles.text}>Upload a photo</Text>
+        <Text style={styles.text}>{picture ? "Edit" : "Upload a photo"}</Text>
         <Stack style={{ gap: 5 }}>
           <TextInput
             variant="standard"
@@ -92,7 +160,9 @@ export const CreatePostsScreen = () => {
         <IconButton
           style={styles.deleteBtn}
           color="#BDBDBD"
-          icon={(props) => <Icon name="delete" {...props} />}
+          icon={(props) => (
+            <Icon name="delete" {...props} onPress={cleanForm} />
+          )}
         />
       </View>
     </View>

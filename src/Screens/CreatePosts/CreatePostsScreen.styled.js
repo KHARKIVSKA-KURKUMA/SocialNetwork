@@ -43,8 +43,8 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   imageContainer: {
-    minWidth: 343,
-    minHeight: 240,
+    width: 343,
+    height: 240,
     backgroundColor: "#E8E8E8",
     borderRadius: 16,
     alignItems: "center",
