@@ -7,7 +7,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 
-const Home = () => {
+export const Home = () => {
   const Tabs = createBottomTabNavigator();
   const navigation = useNavigation();
   const [showTabBar, setShowTabBar] = useState(true);
@@ -91,5 +91,3 @@ const Home = () => {
     </Tabs.Navigator>
   );
 };
-
-export default Home;

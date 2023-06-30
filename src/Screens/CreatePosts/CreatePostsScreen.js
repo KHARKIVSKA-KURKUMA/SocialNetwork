@@ -9,6 +9,8 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import { useDispatch } from "react-redux";
+import { setPostsData } from "../../store/selectors";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -19,6 +21,7 @@ export const CreatePostsScreen = () => {
   const [locationPermission, setHasLocationPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
+  const dispatch = useDispatch();
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
     (async () => {
@@ -45,6 +48,7 @@ export const CreatePostsScreen = () => {
           longitude: position.coords.longitude,
         },
       };
+      dispatch(setPostsData({ hi: "he" }));
       console.log("data :>> ", data);
       navigation.navigate("PostsScreen");
     } else {

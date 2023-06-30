@@ -7,24 +7,11 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Feather } from "@expo/vector-icons";
-import { getCommentsCount } from "../firebase";
-import { useComments } from "../hooks/useComments";
 
 export default Post = ({ image, title, region, coords, id }) => {
   const [value, setValue] = useState(0);
   const navigation = useNavigation();
-
-  const { comments } = useComments();
-
-  useEffect(() => {
-    (async () => {
-      const value = await getCommentsCount(id);
-
-      setValue(value);
-    })();
-  }, [comments?.length]);
-
+  const [comments, setComments] = useState("");
   return (
     <View style={styles.container}>
       <Image source={{ uri: image }} style={styles.image} />
@@ -32,10 +19,7 @@ export default Post = ({ image, title, region, coords, id }) => {
       <View style={styles.textContainer}>
         <TouchableWithoutFeedback
           onPress={() => {
-            navigation.navigate("Posts", {
-              params: { id },
-              screen: "Comments",
-            });
+            navigation.navigate("Comments", { id });
           }}
         >
           <View style={styles.commentsContainer}>
@@ -67,12 +51,11 @@ const styles = StyleSheet.create({
     marginBottom: 34,
     justifyContent: "center",
     marginHorizontal: 16,
-    // width: "100%",
   },
   image: { width: "100%", height: 200, borderRadius: 8, marginBottom: 8 },
   title: {
     marginBottom: 11,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "LexendPeta-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
@@ -84,7 +67,7 @@ const styles = StyleSheet.create({
   },
   commentsContainer: { flexDirection: "row", alignItems: "center", gap: 9 },
   commentText: {
-    fontFamily: "Roboto-Regular",
+    fontFamily: "LexendPeta-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
