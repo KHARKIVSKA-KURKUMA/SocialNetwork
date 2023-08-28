@@ -9,8 +9,6 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
-import { useDispatch } from "react-redux";
-import { setPostsData } from "../../store/selectors";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -21,13 +19,14 @@ export const CreatePostsScreen = () => {
   const [locationPermission, setHasLocationPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
-  const dispatch = useDispatch();
+
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
     (async () => {
       const { status: cameraStatus } =
         await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus === "granted");
+      console.log("hi");
       const { status: locationStatus } =
         await Location.requestForegroundPermissionsAsync();
       setHasLocationPermission(locationStatus === "granted");
@@ -37,6 +36,7 @@ export const CreatePostsScreen = () => {
   /* -------------------------------------------------------------------------- */
   const handleSubmit = async () => {
     const position = await Location.getCurrentPositionAsync();
+    console.log("hi");
     const image = { photo: picture };
     if (locationPermission) {
       const data = {
@@ -48,8 +48,7 @@ export const CreatePostsScreen = () => {
           longitude: position.coords.longitude,
         },
       };
-      dispatch(setPostsData({ hi: "he" }));
-      console.log("data :>> ", data);
+      console.debug("text");
       navigation.navigate("PostsScreen");
     } else {
       const image = { photo: picture };
@@ -58,7 +57,6 @@ export const CreatePostsScreen = () => {
         image,
         location,
       };
-      console.log("data :>> ", data);
       navigation.navigate("PostsScreen");
     }
     cleanForm();
