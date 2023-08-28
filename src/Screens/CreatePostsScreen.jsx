@@ -9,13 +9,15 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
-import { Camera, CameraType, getAvailablePictureSizesAsync } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-
-import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
+import { useDispatch } from "react-redux";
+import { addPost } from "../redux/slices/postsSlice";
+
 const CreatePostsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [type, setType] = useState(CameraType.back);
   const [focusedInput, setFocusedInput] = useState(false);
   const [title, setTitle] = useState("");
@@ -28,7 +30,6 @@ const CreatePostsScreen = ({ navigation }) => {
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
-
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -46,16 +47,18 @@ const CreatePostsScreen = ({ navigation }) => {
     setIsFormValid(previewImage && title && locationText);
   }, [previewImage, title, locationText]);
 
-  const publishPost = () => {
+  const pablishPost = () => {
     if (isFormValid) {
       setPreviewImage(previewImage);
       setTitle(title);
       setLocationText(locationText);
       setLocation(location);
 
-      console.log(previewImage, title, locationText, location);
+      dispatch(addPost({previewImage, title, locationText, location}))
 
-      navigation.navigate("Home");
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 1000)
     }
   };
 
@@ -89,13 +92,9 @@ const CreatePostsScreen = ({ navigation }) => {
         console.log("Permission to access location was denied");
         return;
       }
-      const position = await Location.getCurrentPositionAsync();
-      const place = await Location.reverseGeocodeAsync({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-      setLocation(`${place[0].region}, ${place[0].country}`);
-      setLocationText(`${place[0].region}, ${place[0].country}`);
+      const locationData = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = locationData.coords;
+      setLocation({ latitude, longitude });
 
       setPreviewImage(uri);
     }
@@ -208,7 +207,7 @@ const CreatePostsScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={[styles.button, isFormValid && styles.buttonValid]}
-            onPress={publishPost}
+            onPress={pablishPost}
             disabled={!isFormValid}
           >
             <Text

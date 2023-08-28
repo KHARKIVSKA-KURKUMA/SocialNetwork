@@ -10,6 +10,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { auth } from "../../config";
+import { onAuthStateChanged } from "firebase/auth";
+import { loginDB } from "../redux/services/userService";
 
 const LoginScreen = ({ navigation }) => {
   const [focusedInput, setFocusedInput] = useState(null);
@@ -23,20 +26,30 @@ const LoginScreen = ({ navigation }) => {
     setIsFormValid(email !== "" && password !== "");
   }, [email, password]);
 
-  const showHidePassword = (e) => {
-    e.preventDefault();
+  const showHidePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const signIn = () => {
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("Home");
+        setEmail("");
+        setPassword("");
+      }
+    });
+  }, []);
+
+  const handleSignIn = async () => {
     if (isFormValid) {
       setEmail(email);
       setPassword(password);
 
-      setEmail("");
-      setPassword("");
-
-      navigation.navigate("Home");
+      try {
+        await loginDB(email, password);
+      } catch (error) {
+        console.log("No user in db");
+      }
     }
   };
 
@@ -66,7 +79,8 @@ const LoginScreen = ({ navigation }) => {
                 name="email"
                 value={email}
                 onChangeText={(text) => {
-                  setEmail(text);
+                  setEmail(text.trim());
+                  console.log("Email:", text);
                 }}
                 onFocus={() => setFocusedInput("email")}
                 onBlur={() => setFocusedInput(null)}
@@ -85,6 +99,7 @@ const LoginScreen = ({ navigation }) => {
                 secureTextEntry={!showPassword}
                 onChangeText={(text) => {
                   setPassword(text);
+                  console.log("Password:", text);
                 }}
                 onFocus={() => setFocusedInput("password")}
                 onBlur={() => setFocusedInput(null)}
@@ -101,7 +116,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.actions}>
               <TouchableOpacity
                 style={styles.button}
-                onPress={signIn}
+                onPress={handleSignIn}
                 disabled={!isFormValid}
               >
                 <Text style={styles.buttonText}>Увійти</Text>

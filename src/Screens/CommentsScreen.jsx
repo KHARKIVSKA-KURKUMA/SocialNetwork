@@ -9,13 +9,45 @@ import {
   ScrollView,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
+import { db } from "../../config";
+import { collection, getDocs } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { addComment } from "../redux/slices/commentSlice";
 
-const CommentsScreen = ({navigation}) => {
+const CommentsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [focusedInput, setFocusedInput] = useState(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
+  const [postItem, setPostItem] = useState(null);
   const [isCommentEntered, setIsCommentEntered] = useState(false);
-  
+
+  const route = useRoute();
+  const { postId } = route.params;
+
+  const getDataFromFirestore = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "posts"));
+      const post = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }))
+        .filter((docData) => docData.id === postId);
+
+      setPostItem(post[0]);
+      return post;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    getDataFromFirestore();
+  }, []);
+
   const currentDate = new Date();
   const formattedDate = `${currentDate.toLocaleDateString("uk-UA", {
     day: "2-digit",
@@ -26,12 +58,20 @@ const CommentsScreen = ({navigation}) => {
     minute: "2-digit",
   })}`;
 
-  const postComment = () => {
-    if (isCommentEntered) {
-      setComment(comment);
-      setComment('')
+  const hanlePostComment = () => {
+    const trimmedComment = comment.trim();
+
+    if (isCommentEntered && trimmedComment !== "") {
+      setComment(trimmedComment);
+
+      dispatch(addComment({ postId, comment: trimmedComment, formattedDate }));
+
+      setComment("");
+      setTimeout(() => {
+        getDataFromFirestore();
+      }, 1000);
     }
-  }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -50,78 +90,50 @@ const CommentsScreen = ({navigation}) => {
             <Text style={styles.titleContainerText}>Коментарі</Text>
           </View>
         </View>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-
+        <View style={styles.imageContainer}>
+          {postItem && (
+            <Image
+              style={styles.imageItem}
+              source={{ uri: postItem.data.previewImage }}
+              resizeMode="cover"
+            />
+          )}
+        </View>
+        <ScrollView style={styles.scrollContent}>
           <View style={styles.mainContent}>
             <View style={styles.publicationContainer}>
-              <View style={styles.imageContainer}>
-                <Image
-                  style={styles.imageItem}
-                  source={require("../images/sunset.jpg")}
-            />
-              </View>
               <View style={styles.commentsContainer}>
-                <View style={styles.commentItem}>
-                  <Image
-                    style={styles.commentAvatar}
-                    source={require("../images/avatar-blank.jpg")}
-                  />
-                  <View style={styles.comment}>
-                    <Text style={styles.commentText}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
-                      repudiandae dignissimos iusto tempora!
-                    </Text>
-                    <Text style={styles.commentDate}>{formattedDate}</Text>
-                  </View>
-                </View>
-                <View style={styles.commentItem}>
-                  <Image
-                    style={styles.commentAvatar}
-                    source={require("../images/avatar-blank.jpg")}
-                  />
-                  <View style={styles.comment}>
-                    <Text style={styles.commentText}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
-                      repudiandae dignissimos iusto tempora!
-                    </Text>
-                    <Text style={styles.commentDate}>{formattedDate}</Text>
-                  </View>
-                </View>
-                <View style={styles.commentItem}>
-                  <Image
-                    style={styles.commentAvatar}
-                    source={require("../images/avatar-blank.jpg")}
-                  />
-                  <View style={styles.comment}>
-                    <Text style={styles.commentText}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
-                      repudiandae dignissimos iusto tempora!
-                    </Text>
-                    <Text style={styles.commentDate}>{formattedDate}</Text>
-                  </View>
-                </View>
-                <View style={[styles.commentItem, styles.commentItemReverse]}>
-                  <Image
-                    style={styles.commentAvatar}
-                    source={require("../images/avatar-blank.jpg")}
-                  />
-                  <View style={[styles.comment, styles.commentReverse]}>
-                    <Text style={styles.commentText}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
-                      repudiandae dignissimos iusto tempora!
-                    </Text>
-                    <Text style={[styles.commentDate, styles.commentDateReverse]}>{formattedDate}</Text>
-                  </View>
-                </View>
+                {postItem &&
+                  postItem.data.comments.map((comment, index) => (
+                    <View
+                      style={[
+                        styles.commentItem,
+                        index % 2 === 0 ? styles.commentItemReverse : null,
+                      ]}
+                      key={index}
+                    >
+                      <Image
+                        style={styles.commentAvatar}
+                        source={require("../images/avatar-blank.jpg")}
+                      />
+                      <View
+                        style={[
+                          styles.comment,
+                          index % 2 === 0 ? styles.commentReverse : null,
+                        ]}
+                      >
+                        <Text style={styles.commentText}>
+                          {comment.comment}
+                        </Text>
+                        <Text style={styles.commentDate}>{comment.date}</Text>
+                      </View>
+                    </View>
+                  ))}
               </View>
             </View>
           </View>
         </ScrollView>
-      <View style={styles.formContainer}>
+        <View style={styles.formContainer}>
           <TextInput
             style={[
               [styles.input],
@@ -133,14 +145,15 @@ const CommentsScreen = ({navigation}) => {
             value={comment}
             onChangeText={(text) => {
               setComment(text);
-              setIsCommentEntered(text !== "");
+              setIsCommentEntered(text.trim() !== "");
             }}
             onFocus={() => setFocusedInput("comment")}
             onBlur={() => setFocusedInput(null)}
           />
           <TouchableOpacity
             style={styles.buttonPost}
-            onPress={postComment}
+            onPress={hanlePostComment}
+            disabled={!isCommentEntered || comment.trim() === ""}
           >
             <Image
               style={styles.buttonPostIcon}
@@ -157,9 +170,11 @@ export default CommentsScreen;
 
 const styles = StyleSheet.create({
   page: {
-    position: 'relative',
+    position: "relative",
     backgroundColor: "#fff",
     flex: 1,
+    paddingTop: 44,
+    paddingBottom: 22,
   },
   header: {
     position: "relative",
@@ -208,12 +223,18 @@ const styles = StyleSheet.create({
     marginBottom: 82,
   },
   imageContainer: {
+    position: "relative",
+    marginLeft: 16,
+    marginTop: 32,
+    marginRight: 16,
     height: 240,
     borderRadius: 8,
     backgroundColor: "#E8E8E8",
     marginBottom: 32,
   },
   imageItem: {
+    position: "absolute",
+    top: 0,
     width: "100%",
     height: 240,
     borderRadius: 8,
@@ -227,7 +248,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   commentItemReverse: {
-    flexDirection: 'row-reverse'
+    flexDirection: "row-reverse",
   },
   commentAvatar: {
     borderRadius: 28,
@@ -260,14 +281,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   commentDateReverse: {
-    textAlign: 'left'
+    textAlign: "left",
   },
   formContainer: {
     position: "absolute",
     bottom: 0,
     left: 0,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     right: 0,
   },
   input: {
@@ -288,20 +309,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     color: "#000",
   },
-
   buttonPost: {
-    position: 'absolute',
+    position: "absolute",
     right: 24,
     top: 24,
     width: 34,
     height: 34,
-    backgroundColor: '#FF6C00',
-    alignItems: 'center',
+    backgroundColor: "#FF6C00",
+    alignItems: "center",
     borderRadius: 34,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   buttonPostIcon: {
     width: 10,
-    height: 14
-  }
+    height: 14,
+  },
 });
