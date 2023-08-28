@@ -11,11 +11,11 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import React, { useState } from "react";
 
-const CommentsScreen = ({ navigation }) => {
+const CommentsScreen = ({navigation}) => {
   const [focusedInput, setFocusedInput] = useState(null);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [isCommentEntered, setIsCommentEntered] = useState(false);
-
+  
   const currentDate = new Date();
   const formattedDate = `${currentDate.toLocaleDateString("uk-UA", {
     day: "2-digit",
@@ -29,12 +29,9 @@ const CommentsScreen = ({ navigation }) => {
   const postComment = () => {
     if (isCommentEntered) {
       setComment(comment);
-
-      console.log(comment);
-
-      setComment("");
+      setComment('')
     }
-  };
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -54,13 +51,14 @@ const CommentsScreen = ({ navigation }) => {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.scrollContent}>
+
           <View style={styles.mainContent}>
             <View style={styles.publicationContainer}>
               <View style={styles.imageContainer}>
                 <Image
                   style={styles.imageItem}
                   source={require("../images/sunset.jpg")}
-                />
+            />
               </View>
               <View style={styles.commentsContainer}>
                 <View style={styles.commentItem}>
@@ -71,8 +69,8 @@ const CommentsScreen = ({ navigation }) => {
                   <View style={styles.comment}>
                     <Text style={styles.commentText}>
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus
-                      voluptate repudiandae dignissimos iusto tempora!
+                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
+                      repudiandae dignissimos iusto tempora!
                     </Text>
                     <Text style={styles.commentDate}>{formattedDate}</Text>
                   </View>
@@ -85,8 +83,8 @@ const CommentsScreen = ({ navigation }) => {
                   <View style={styles.comment}>
                     <Text style={styles.commentText}>
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus
-                      voluptate repudiandae dignissimos iusto tempora!
+                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
+                      repudiandae dignissimos iusto tempora!
                     </Text>
                     <Text style={styles.commentDate}>{formattedDate}</Text>
                   </View>
@@ -99,8 +97,8 @@ const CommentsScreen = ({ navigation }) => {
                   <View style={styles.comment}>
                     <Text style={styles.commentText}>
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus
-                      voluptate repudiandae dignissimos iusto tempora!
+                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
+                      repudiandae dignissimos iusto tempora!
                     </Text>
                     <Text style={styles.commentDate}>{formattedDate}</Text>
                   </View>
@@ -113,21 +111,17 @@ const CommentsScreen = ({ navigation }) => {
                   <View style={[styles.comment, styles.commentReverse]}>
                     <Text style={styles.commentText}>
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Vitae ea doloribus dolor delectus dicta? Possimus
-                      voluptate repudiandae dignissimos iusto tempora!
+                      Vitae ea doloribus dolor delectus dicta? Possimus voluptate
+                      repudiandae dignissimos iusto tempora!
                     </Text>
-                    <Text
-                      style={[styles.commentDate, styles.commentDateReverse]}
-                    >
-                      {formattedDate}
-                    </Text>
+                    <Text style={[styles.commentDate, styles.commentDateReverse]}>{formattedDate}</Text>
                   </View>
                 </View>
               </View>
             </View>
           </View>
         </ScrollView>
-        <View style={styles.formContainer}>
+      <View style={styles.formContainer}>
           <TextInput
             style={[
               [styles.input],
@@ -144,7 +138,10 @@ const CommentsScreen = ({ navigation }) => {
             onFocus={() => setFocusedInput("comment")}
             onBlur={() => setFocusedInput(null)}
           />
-          <TouchableOpacity style={styles.buttonPost} onPress={postComment}>
+          <TouchableOpacity
+            style={styles.buttonPost}
+            onPress={postComment}
+          >
             <Image
               style={styles.buttonPostIcon}
               source={require("../images/arrow-up.png")}
@@ -160,7 +157,7 @@ export default CommentsScreen;
 
 const styles = StyleSheet.create({
   page: {
-    position: "relative",
+    position: 'relative',
     backgroundColor: "#fff",
     flex: 1,
   },
@@ -230,7 +227,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   commentItemReverse: {
-    flexDirection: "row-reverse",
+    flexDirection: 'row-reverse'
   },
   commentAvatar: {
     borderRadius: 28,
@@ -263,14 +260,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   commentDateReverse: {
-    textAlign: "left",
+    textAlign: 'left'
   },
   formContainer: {
     position: "absolute",
     bottom: 0,
     left: 0,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     right: 0,
   },
   input: {
@@ -293,18 +290,18 @@ const styles = StyleSheet.create({
   },
 
   buttonPost: {
-    position: "absolute",
+    position: 'absolute',
     right: 24,
     top: 24,
     width: 34,
     height: 34,
-    backgroundColor: "#FF6C00",
-    alignItems: "center",
+    backgroundColor: '#FF6C00',
+    alignItems: 'center',
     borderRadius: 34,
-    justifyContent: "center",
+    justifyContent: 'center'
   },
   buttonPostIcon: {
     width: 10,
-    height: 14,
-  },
+    height: 14
+  }
 });

@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import RegistrationScreen from "./src/Screens/RegistrationScreen";
 import LoginScreen from "./src/Screens/LoginScreen";
 import Home from "./src/Screens/Home";
@@ -14,9 +14,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./src/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("./src/fonts/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("./src/fonts/Roboto-Medium.ttf"),
+    "Roboto-Regular": require("./assets/fonts/LexendPeta-Regular.ttf"),
+    "Roboto-Bold": require("./assets/fonts/LexendPeta-Bold.ttf"),
+    "Roboto-Medium": require("./assets/fonts/LexendPeta-Medium.ttf"),
   });
   if (!fontsLoaded) {
     return null;
