@@ -13,17 +13,20 @@ import {
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import { auth } from "../../config";
-import { registerDB } from "../redux/services/userService";
+import {
+  registerDB,
+  writeUserToFirestore,
+} from "../redux/services/userService";
+import { useUser, userId } from "../UserContext";
 
 const RegistrationScreen = ({ navigation }) => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
-
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const { setUser } = useUser();
 
   useEffect(() => {
     setIsFormValid(login !== "" && email && password);
@@ -54,6 +57,8 @@ const RegistrationScreen = ({ navigation }) => {
       updateProfile(auth.currentUser, {
         displayName: login,
       });
+      const id = await writeUserToFirestore(login, email, password);
+      setUser(id);
     }
   };
 
@@ -96,7 +101,6 @@ const RegistrationScreen = ({ navigation }) => {
                 value={login}
                 onChangeText={(text) => {
                   setLogin(text);
-                  console.log("login:", text);
                 }}
                 onFocus={() => setFocusedInput("login")}
                 onBlur={() => setFocusedInput(null)}
@@ -114,7 +118,6 @@ const RegistrationScreen = ({ navigation }) => {
                 value={email}
                 onChangeText={(text) => {
                   setEmail(text.trim());
-                  console.log("Email:", text);
                 }}
                 onFocus={() => setFocusedInput("email")}
                 onBlur={() => setFocusedInput(null)}
@@ -133,7 +136,6 @@ const RegistrationScreen = ({ navigation }) => {
                 secureTextEntry={!showPassword}
                 onChangeText={(text) => {
                   setPassword(text);
-                  console.log("Password:", text);
                 }}
                 onFocus={() => setFocusedInput("password")}
                 onBlur={() => setFocusedInput(null)}

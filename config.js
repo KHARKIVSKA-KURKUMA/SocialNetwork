@@ -4,14 +4,15 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAuV9rkw6i3EaHpgb_NytsU12AQ0tQT4bU",
-  authDomain: "thesocialnetwork-70b0b.firebaseapp.com",
-  databaseURL: "https://thesocialnetwork-70b0b-default-rtdb.firebaseio.com",
-  projectId: "thesocialnetwork-70b0b",
-  storageBucket: "thesocialnetwork-70b0b.appspot.com",
-  messagingSenderId: "1040093762419",
-  appId: "1:1040093762419:web:612ea6cd0d8a70beb92b06",
-  measurementId: "G-NSLZVL07QZ",
+  apiKey: "AIzaSyAaYkyigImnlCWNdF0DNJASsNLnzJQHN_A",
+  authDomain: "social-network-df6bc.firebaseapp.com",
+  databaseURL:
+    "https://social-network-df6bc-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "social-network-df6bc",
+  storageBucket: "social-network-df6bc.appspot.com",
+  messagingSenderId: "580580401625",
+  appId: "1:580580401625:web:495b6b74d8c50cffbeb9c8",
+  measurementId: "G-SEZ4NNGQXX",
 };
 
 const app = initializeApp(firebaseConfig);

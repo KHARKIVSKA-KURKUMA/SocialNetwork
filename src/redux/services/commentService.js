@@ -1,9 +1,9 @@
 import { db } from "../../../config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
- export const writeCommentToFirestore = async (postId, commentsItem) => {
+export const writeCommentToFirestore = async (userId, postId, commentsItem) => {
   try {
-    const snapshot = await getDocs(collection(db, "posts"));
+    const snapshot = await getDocs(collection(db, "users", userId, "posts"));
     const post = snapshot.docs
       .map((doc) => ({
         id: doc.id,
@@ -11,7 +11,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       }))
       .filter((docData) => docData.id === postId);
 
-    const docRef = doc(collection(db, "posts"), postId);
+    const docRef = doc(collection(db, "users", userId, "posts"), postId);
 
     const array = post[0].data.comments;
     array.push(commentsItem);

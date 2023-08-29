@@ -11,10 +11,10 @@ import MapScreen from "./src/Screens/MapScreen";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./src/redux/store";
+import { UserProvider } from "./src/UserContext";
 
 const App = () => {
   const [fontsLoaded] = useFonts({
@@ -29,7 +29,7 @@ const App = () => {
   const MainStack = createStackNavigator();
 
   return (
-    <>
+    <UserProvider>
       {fontsLoaded && (
         <Provider store={store}>
           <PersistGate persistor={persistor}>
@@ -80,7 +80,7 @@ const App = () => {
           </PersistGate>
         </Provider>
       )}
-    </>
+    </UserProvider>
   );
 };
 

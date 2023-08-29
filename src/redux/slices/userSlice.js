@@ -21,7 +21,6 @@ const userSlice = createSlice({
         await updateUserProfile({
           displayName: login,
         });
-
         const userUpdateSucces = auth.currentUser;
         console.log("Registration and login into", auth.currentUser.email);
         return userUpdateSucces;

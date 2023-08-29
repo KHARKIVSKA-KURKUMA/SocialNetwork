@@ -2,13 +2,14 @@ import { db } from "../../../config";
 import { collection, addDoc } from "firebase/firestore";
 
 export const writePostToFirestore = async (
+  userId,
   previewImage,
   title,
   locationText,
   location
 ) => {
   try {
-    const docRef = await addDoc(collection(db, "posts"), {
+    const docRef = await addDoc(collection(db, "users", userId, "posts"), {
       previewImage: previewImage,
       title: title,
       locationText: locationText,

@@ -9,7 +9,7 @@ const commentSlice = createSlice({
     addComment: (state, action) => {
       state.comment = action.payload;
       console.log("addComment", state.comment);
-      writeCommentToFirestore(state.comment.postId, {
+      writeCommentToFirestore(state.comment.userId, state.comment.postId, {
         comment: state.comment.comment,
         date: state.comment.formattedDate,
       });

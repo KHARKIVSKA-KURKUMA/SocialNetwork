@@ -1,5 +1,5 @@
-import { createAsyncThunk} from "@reduxjs/toolkit";
-import { auth } from "../../../config"; 
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { auth } from "../../../config";
 
 export const signIn = createAsyncThunk(
   "firebase/signIn",

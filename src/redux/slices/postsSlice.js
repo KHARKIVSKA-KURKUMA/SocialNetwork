@@ -10,6 +10,7 @@ const postSlice = createSlice({
       state.post = action.payload;
       console.log("addPost", state.post);
       writePostToFirestore(
+        state.post.userId,
         state.post.previewImage,
         state.post.title,
         state.post.locationText,

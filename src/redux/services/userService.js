@@ -15,6 +15,7 @@ export const writeUserToFirestore = async (login, email, password) => {
       password: password,
     });
     console.log("Document written with ID: ", docRef.id);
+    return docRef.id;
   } catch (e) {
     console.error("Error adding document: ", e);
     throw e;
