@@ -10,7 +10,6 @@ const Tabs = createBottomTabNavigator();
 
 const TabBarIcon = ({ routeName, focused }) => {
   let iconSource, backgroundColor, iconColor;
-
   if (routeName === "Profile") {
     iconSource = require("../images/user.png");
   } else if (routeName === "PostsScreen") {
@@ -18,7 +17,6 @@ const TabBarIcon = ({ routeName, focused }) => {
   } else if (routeName === "CreatePosts") {
     iconSource = require("../images/new.png");
   }
-
   if (focused) {
     backgroundColor = "#FF6C00";
     iconColor = "#FFFFFF";
@@ -26,7 +24,6 @@ const TabBarIcon = ({ routeName, focused }) => {
     backgroundColor = "#FFFFFF";
     iconColor = "#000000";
   }
-
   return (
     <View style={[styles.tabIconContainer, { backgroundColor }]}>
       <Image
@@ -36,7 +33,7 @@ const TabBarIcon = ({ routeName, focused }) => {
     </View>
   );
 };
-
+/* -------------------------------------------------------------------------- */
 const Home = ({ navigation, route }) => {
   let tabBarVisible = true;
   let routeName = getFocusedRouteNameFromRoute(route);
@@ -44,7 +41,7 @@ const Home = ({ navigation, route }) => {
     tabBarVisible = false;
     navigation.navigate("CreatePosts");
   }
-
+  /* --------------------------------- RENDER --------------------------------- */
   return (
     <View style={styles.page}>
       {tabBarVisible && (
@@ -54,20 +51,20 @@ const Home = ({ navigation, route }) => {
               <TabBarIcon routeName={route.name} focused={focused} />
             ),
             headerShown: false,
-            tabBarStyle:{
+            tabBarStyle: {
               borderTopColor: "rgba(0, 0, 0, 0.2)",
               borderTopStyle: "solid",
               borderTopWidth: 1,
               paddingTop: 9,
               paddingBottom: 9,
-              justifyContent: 'center',
-              alignItems: 'center',
+              justifyContent: "center",
+              alignItems: "center",
             },
-            tabBarItemStyle:{
+            tabBarItemStyle: {
               margin: 9,
               flex: 0,
               width: 70,
-            }
+            },
           })}
           tabBarOptions={{
             activeTintColor: "#FF6C00",
